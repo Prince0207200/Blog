@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     bat 'docker rm -f my-app-container || true'
-                    bat "docker run -d --name my-app-container -p 3000:8000 ${IMAGE_NAME}"
+                    bat "docker run -d --name my-app-container -p 3000:3000 ${IMAGE_NAME}"
                 }
             }
         }
