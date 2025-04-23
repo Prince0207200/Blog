@@ -17,7 +17,8 @@ pipeline {
             steps {
                 script {
                     dir('Backend') {
-                        bat 'docker build -t $BACKEND_IMAGE .'
+                        bat 'docker build -t %BACKEND_IMAGE% .'
+
                     }
                 }
             }
