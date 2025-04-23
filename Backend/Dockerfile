@@ -1,17 +1,20 @@
-# Use official Node.js image
+# Use official Node.js LTS image
 FROM node:18
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# Install app dependencies
+# Copy only package files first (leverages Docker cache)
 COPY package*.json ./
 
+# Install dependencies
 RUN npm install
 
-# Bundle app source
+# Copy the rest of the application
 COPY . .
 
-# Set environment variables from .env (done in docker-compose.yml)
-# Start the app
+# Expose the backend port (good for documentation and Docker Compose)
+EXPOSE 8001
+
+# Start the backend server
 CMD ["node", "src/index.js"]

@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "my-app-image:latest"
+        FRONTEND_IMAGE = "my-frontend-image:latest"
+        BACKEND_IMAGE = "my-backend-image:latest"
     }
 
     stages {
@@ -12,10 +13,18 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Frontend') {
             steps {
-                dir('Backend') {
-                    bat "docker build -t ${IMAGE_NAME} ."
+                dir('frontend') {
+                    bat "docker build -t ${FRONTEND_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                dir('backend') {
+                    bat "docker build -t ${BACKEND_IMAGE} ."
                 }
             }
         }
@@ -23,8 +32,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    bat 'docker rm -f my-app-container || true'
-                    bat "docker run -d --name my-app-container -p 8001:8001 ${IMAGE_NAME}"
+                    // Stop old containers if they exist
+                    bat 'docker rm -f frontend-container || true'
+                    bat 'docker rm -f backend-container || true'
+
+                    // Run new containers
+                    bat "docker run -d --name backend-container -p 8001:8001 ${BACKEND_IMAGE}"
+                    bat "docker run -d --name frontend-container -p 5173:80 --link backend-container ${FRONTEND_IMAGE}"
                 }
             }
         }
