@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     dir('Frontend') {
-                        bat 'docker build -t $FRONTEND_IMAGE .'
+                        bat 'docker build -t %FRONTEND_IMAGE% .'
                     }
                 }
             }
