@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     dir('Backend') {
-                        sh 'docker build -t $BACKEND_IMAGE .'
+                        bat 'docker build -t $BACKEND_IMAGE .'
                     }
                 }
             }
@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     dir('Frontend') {
-                        sh 'docker build -t $FRONTEND_IMAGE .'
+                        bat 'docker build -t $FRONTEND_IMAGE .'
                     }
                 }
             }
