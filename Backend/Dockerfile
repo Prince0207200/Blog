@@ -1,5 +1,5 @@
 # Use official Node.js LTS image
-FROM node:18
+FROM node:latest
 
 # Set working directory
 WORKDIR /app
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8001
 
 # Start the backend server
-CMD ["node", "src/index.js"]
+CMD ["npm", "run", "dev"]

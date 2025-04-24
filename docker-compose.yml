@@ -3,19 +3,16 @@
 services:
   frontend:
     build:
-      context: ./frontend
+      context: ./Frontend
     ports:
-      - "5173:80"
+      - "5001:5000"
     depends_on:
       - backend
 
   backend:
     build:
-      context: ./backend
+      context: ./Backend
     ports:
       - "8001:8001"
-    
-    env_file:
-      - ./backend/.env
-
-  # No mongo service needed as you use Atlas
+    dns:
+      - 8.8.8.8
