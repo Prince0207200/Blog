@@ -35,8 +35,8 @@ pipeline {
         stage('Run Containers') {
             steps {
                 bat '''
-                    docker run -d -p 5000:5173 --name frontend frontend
-                    docker run -d -p 3000:5000 --name backend backend
+                    docker run -d --name frontend -p 5173:5173 --env VITE_API_URL=http://localhost:5000 frontend
+                    docker run -d -p 5000:5000 --name backend backend
                 '''
             }
         }
