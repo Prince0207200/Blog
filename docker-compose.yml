@@ -12,5 +12,8 @@ services:
       context: ./Backend
     ports:
       - "3000:5000"  # Host:Container (updated to expose internal port 80)
+    env_file:
+    - ./Backend/.env
     dns:
       - 8.8.8.8
+      - 1.1.1.1

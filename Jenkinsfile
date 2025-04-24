@@ -1,62 +1,72 @@
 pipeline {
     agent any
 
-    environment {
-        FRONTEND_IMAGE = "my-frontend-image:latest"
-        BACKEND_IMAGE = "my-backend-image:latest"
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Docker Cleanup') {
             steps {
-                checkout scm
+                bat '''
+                    docker stop frontend || echo Frontend container not running
+                    docker rm frontend || echo No frontend container to remove
+                    docker rmi -f frontend || echo No frontend image to remove
+
+                    docker stop backend || echo Backend container not running
+                    docker rm backend || echo No backend container to remove
+                    docker rmi -f backend || echo No backend image to remove
+                '''
             }
         }
 
-        stage('Build Frontend') {
+        stage('Build Frontend Image') {
             steps {
                 dir('frontend') {
-                    bat "docker build -t ${FRONTEND_IMAGE} ."
+                    bat 'docker build -t frontend .'
                 }
             }
         }
 
-        stage('Build Backend') {
+        stage('Build Backend Image') {
             steps {
                 dir('backend') {
-                    bat "docker build -t ${BACKEND_IMAGE} ."
+                    bat 'docker build -t backend .'
                 }
             }
         }
 
-        stage('Deploy') {
-    steps {
-        script {
-            // Stop old containers if they exist
-            bat 'docker rm -f frontend-container 2>nul || exit /b 0'
-            bat 'docker rm -f backend-container 2>nul || exit /b 0'
+        stage('Run Containers') {
+            steps {
+                bat '''
+                    docker run -d -p 5001:5000 --name frontend frontend
+                    docker run -d -p 3000:5000 --name backend backend
+                '''
+            }
+        }
 
-            // Create Docker network if not already present
-            bat 'docker network create app-net 2>nul || exit /b 0'
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat '''
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        
+                        docker tag frontend %DOCKER_USER%/frontend:latest
+                        docker tag backend %DOCKER_USER%/backend:latest
 
-            // Run new containers
-            bat "docker run -d --name backend-container --network app-net -p 8001:80 %BACKEND_IMAGE%"
-            bat "docker run -d --name frontend-container --network app-net -p 5001:5000 %FRONTEND_IMAGE%"
+                        docker push %DOCKER_USER%/frontend:latest
+                        docker push %DOCKER_USER%/backend:latest
+                    '''
+                }
+            }
         }
     }
-}
 
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'Frontend and backend built, deployed, and pushed successfully.'
+        }
+        failure {
+            echo 'One or more pipeline steps failed.'
+        }
     }
-
-    // post {
-    //     always {
-    //         echo 'Pipeline finished.'
-    //     }
-    //     success {
-    //         echo 'Build and deploy successful.'
-    //     }
-    //     failure {
-    //         echo 'Build or deploy failed.'
-    //     }
-    // }
 }
