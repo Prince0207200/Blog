@@ -36,7 +36,7 @@ pipeline {
             steps {
                 bat '''
                     docker run -d --name frontend -p 5173:5173 --env VITE_API_URL=http://localhost:5000 frontend
-                    docker run -d -p 5000:5000 --name backend backend
+                    docker run -d -e MONGODB_URI=mongodb+srv://prince00:prince00@blog-ca-cluster.fw8jeut.mongodb.net/?retryWrites=true&w=majority&appName=blog-ca-cluster -e JWT_SECRET=Yv7XzRj8WqkGpS2f0B1tN9eL6UmD3cA5VhZrT4KyXjPuMfEdQqOiWcNsLaHgTbRy -e CLOUDINARY_CLOUD_NAME=drswwrvip -e CLOUDINARY_API_KEY=462654477487138 -e CLOUDINARY_API_SECRET=zexfWmEGzVEP_VEYkOYmBd4UTCs -e ACCESS_TOKEN_SECRET=ats -e ACCESS_TOKEN_EXPIRY=1d -e REFRESH_TOKEN_SECRET=rts -e REFRESH_TOKEN_EXPIRY=15d -e PORT=5000 --name backend -p 5000:5000 backend
                 '''
             }
         }
