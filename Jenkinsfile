@@ -30,20 +30,22 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                script {
-                    // Stop old containers if they exist
-                    bat 'docker rm -f frontend-container || true'
-                    bat 'docker rm -f backend-container || true'
+    steps {
+        script {
+            // Stop old containers if they exist
+            bat 'docker rm -f frontend-container || true'
+            bat 'docker rm -f backend-container || true'
 
-                    // Run new containers
-                  bat "docker network create app-net || true"
-bat "docker run -d --name backend-container --network app-net -p 5000:5000 %BACKEND_IMAGE%"
-bat "docker run -d --name frontend-container --network app-net -p 5173:80 %FRONTEND_IMAGE%"
+            // Create network if not exists
+            bat 'docker network create app-net || true'
 
-                }
-            }
+            // Run new containers with updated ports
+            bat "docker run -d --name backend-container --network app-net -p 8001:80 %BACKEND_IMAGE%"
+            bat "docker run -d --name frontend-container --network app-net -p 5001:5000 %FRONTEND_IMAGE%"
         }
+    }
+}
+
     }
 
     post {
