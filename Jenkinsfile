@@ -37,10 +37,11 @@ pipeline {
                     bat 'docker rm -f backend-container || true'
 
                     // Run new containers
-                    docker network create app-net || true
-                    docker run -d --name backend-container --network app-net -p 8001:8001 %BACKEND_IMAGE%
-                    docker run -d --name frontend-container --network app-net -p 5173:80 %FRONTEND_IMAGE%
-}
+                  bat "docker network create app-net || true"
+bat "docker run -d --name backend-container --network app-net -p 8001:8001 %BACKEND_IMAGE%"
+bat "docker run -d --name frontend-container --network app-net -p 5173:80 %FRONTEND_IMAGE%"
+
+                }
             }
         }
     }
