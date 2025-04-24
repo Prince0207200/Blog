@@ -48,15 +48,15 @@ pipeline {
 
     }
 
-    post {
-        always {
-            echo 'Pipeline finished.'
-        }
-        success {
-            echo 'Build and deploy successful.'
-        }
-        failure {
-            echo 'Build or deploy failed.'
-        }
-    }
+    // post {
+    //     always {
+    //         echo 'Pipeline finished.'
+    //     }
+    //     success {
+    //         echo 'Build and deploy successful.'
+    //     }
+    //     failure {
+    //         echo 'Build or deploy failed.'
+    //     }
+    // }
 }
