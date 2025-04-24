@@ -16,6 +16,10 @@ app.use(cookieParser())
 // routes
 
 import userRouter from "./Routes/user.route.js"
+app.get("/", (req, res) => {
+    console.log("Backend is running");
+    res.send("Backend is running at container port 5000!");
+});
 
 // routes declaration
 app.use("/api/v1/users", userRouter)

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs'; // switched from 'bcrypt' to 'bcryptjs'
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String,
-    required:true
+    required: true,
   },
   posts: [
     {
@@ -73,6 +73,7 @@ userSchema.methods.generateAccessToken = function () {
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
   );
 };
+
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     { _id: this._id },

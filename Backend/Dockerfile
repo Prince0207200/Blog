@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the backend port (good for documentation and Docker Compose)
-EXPOSE 80
+EXPOSE 5000
 
 # Start the backend server
 CMD ["npm", "run", "dev"]
