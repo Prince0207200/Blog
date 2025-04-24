@@ -35,7 +35,7 @@ pipeline {
         stage('Run Containers') {
             steps {
                 bat '''
-                    docker run -d -p 5001:5000 --name frontend frontend
+                    docker run -d -p 5000:5173 --name frontend frontend
                     docker run -d -p 3000:5000 --name backend backend
                 '''
             }
