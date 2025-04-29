@@ -1,7 +1,19 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials' // your Docker Hub credential ID
+    }
+
     stages {
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                }
+            }
+        }
+
         stage('Docker Cleanup') {
             steps {
                 bat '''
@@ -43,10 +55,10 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat '''
                         echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
-                        
+
                         docker tag frontend %DOCKER_USER%/frontend:latest
                         docker tag backend %DOCKER_USER%/backend:latest
 
