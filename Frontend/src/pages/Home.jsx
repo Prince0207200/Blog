@@ -23,7 +23,7 @@ function Home() {
                     <div className="flex flex-wrap">
                         <div className="p-2 w-full">
                             <h1 className="text-2xl font-bold hover:text-gray-500">
-                                Your post will be added after
+                                Your post will be added after running test
                             </h1>
                         </div>
                     </div>
